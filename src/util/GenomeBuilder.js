@@ -2,6 +2,7 @@ const StaticManager = require('./StaticManager');
 const PopulationTracker = require('./trackers/PopulationTracker');
 const Genome = require('../core/genome/Genome');
 const InputNode = require('../core/genome/genes/nodegene/InputNode');
+const HiddenNode = require('../core/genome/genes/nodegene/HiddenNode');
 const OutputNode = require('../core/genome/genes/nodegene/OutputNode');
 const BiasNode = require('../core/genome/genes/nodegene/BiasNode');
 const ConnectionGene = require('../core/genome/genes/connectiongene/ConnectionGene');
