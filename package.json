@@ -1,6 +1,6 @@
 {
   "name": "neat-javascript",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "src/index.js",
   "description": "A JavaScript implementation of the NEAT (NeuroEvolution of Augmenting Topologies) algorithm for evolving artificial neural networks.",
   "keywords": [

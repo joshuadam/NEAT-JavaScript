@@ -27,7 +27,7 @@ npm install neat-javascript
 To use in a browser, simply add the following script tag to your HTML file:
 
 ```html
-<script src="https://neat-javascript.org/releases/NEAT-JavaScript-1.0.0.js"></script>
+<script src="https://neat-javascript.org/releases/NEAT-JavaScript-1.0.1.js"></script>
 ```
 
 ## Documentation
