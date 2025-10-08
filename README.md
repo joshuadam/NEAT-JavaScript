@@ -7,12 +7,13 @@ In this implementation, NEAT’s principles are faithfully applied, emphasizing 
 This implementation offers a clear, accessible codebase for those exploring NEAT and has achieved results comparable to the benchmarks demonstrated in the original paper, providing a solid foundation for further exploration and development.
 
 ## Examples
-- [Snake](https://neat-javascript.org/examples/snake.html)
+- [Chrome Dino Game](https://neat-javascript.org/examples/dino.html)
 - [Self Driving Car](https://neat-javascript.org/examples/self-driving-car.html)
 - [XOR](https://neat-javascript.org/xor.html)
 - [Flappy Bird](https://neat-javascript.org/examples/flappy-bird.html)
 - [Pole-Balancing](https://neat-javascript.org/examples/pole-balancing.html)
 - [Ant Simulator](https://neat-javascript.org/examples/ant-simulator.html)
+- [Snake](https://neat-javascript.org/examples/snake.html)
 
 ## Installation
 
