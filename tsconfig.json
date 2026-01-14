@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "strict": true,
+    "noEmit": true,
+    "lib": ["es6", "dom"]
+  },
+  "include": ["src/**/*.js"]
+}
