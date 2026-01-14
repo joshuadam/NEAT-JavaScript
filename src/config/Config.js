@@ -80,7 +80,8 @@ const FitnessFunctions = {
 class Config {
   inputSize = 2
   outputSize = 1
-  activationFunction = 'Sigmoid'
+  /** @type {ActivationFunction} */
+  activationFunction = new Sigmoid()
   bias = 1.0
   connectBias = true
   biasMode = 'WEIGHTED_NODE'
@@ -88,13 +89,12 @@ class Config {
   recurrentConnectionRate = 1.0
   minWeight = -4.0
   maxWeight = 4.0
-  weightInitialization = {
-    type: 'Random',
-    params: [-1, 1]
-  }
+  /** @type {WeightInitialization} */
+  weightInitialization = new RandomWeightInitialization(-1.0, 1.0)
   populationSize = 150
   generations = 100
-  fitnessFunction = 'XOR'
+  /** @type {FitnessFunction} */
+  fitnessFunction = new XOR()
   targetFitness = 0.95
   survivalRate = 0.2
   numOfElite = 10
