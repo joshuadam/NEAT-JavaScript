@@ -1,7 +1,28 @@
 const GenomeTracker = require('./trackers/GenomeTracker');
 const NodeTracker = require('./trackers/NodeTracker');
 
+/** @typedef {import('./trackers/InnovationTracker')} InnovationTracker */
+
+/**
+ * Singleton manager class for accessing trackers.
+ */
 class StaticManager {
+  /** @type {StaticManager|undefined} */
+  static instance;
+
+  /** @type {Map<number, InnovationTracker>} */
+  innovationTrackerMap = /** @type {*} */ (undefined);
+
+  /** @type {Map<number, GenomeTracker>} */
+  genomeTrackerMap = /** @type {*} */ (undefined);
+
+  /** @type {Map<number, NodeTracker>} */
+  nodeTrackerMap = /** @type {*} */ (undefined);
+
+  /**
+   * Creates or returns the singleton StaticManager instance.
+   * Initializes tracker maps for storing population-specific trackers.
+   */
   constructor() {
     if (!StaticManager.instance) {
       StaticManager.instance = this;
@@ -12,9 +33,14 @@ class StaticManager {
     return StaticManager.instance;
   }
 
+  /**
+   * Gets or creates an InnovationTracker for the specified population.
+   * @param {number} populationId - The unique identifier of the population.
+   * @returns {InnovationTracker} The InnovationTracker instance for this population.
+   */
   getInnovationTracker(populationId) {
     if (this.innovationTrackerMap.has(populationId)) {
-      return this.innovationTrackerMap.get(populationId);
+      return /** @type {InnovationTracker} */ (this.innovationTrackerMap.get(populationId));
     } else {
       const InnovationTracker = require('./trackers/InnovationTracker');
       const newInnovationTracker = new InnovationTracker();
@@ -23,9 +49,14 @@ class StaticManager {
     }
   }
 
+  /**
+   * Gets or creates a GenomeTracker for the specified population.
+   * @param {number} populationId - The unique identifier of the population.
+   * @returns {GenomeTracker} The GenomeTracker instance for this population.
+   */
   getGenomeTracker(populationId) {
     if (this.genomeTrackerMap.has(populationId)) {
-      return this.genomeTrackerMap.get(populationId);
+      return /** @type {GenomeTracker} */ (this.genomeTrackerMap.get(populationId));
     } else {
       const genomeTracker = new GenomeTracker();
       this.genomeTrackerMap.set(populationId, genomeTracker);
@@ -33,9 +64,14 @@ class StaticManager {
     }
   }
 
+  /**
+   * Gets or creates a NodeTracker for the specified population.
+   * @param {number} populationId - The unique identifier of the population.
+   * @returns {NodeTracker} The NodeTracker instance for this population.
+   */
   getNodeTracker(populationId) {
     if (this.nodeTrackerMap.has(populationId)) {
-      return this.nodeTrackerMap.get(populationId);
+      return /** @type {NodeTracker} */ (this.nodeTrackerMap.get(populationId));
     } else {
       const nodeTracker = new NodeTracker();
       this.nodeTrackerMap.set(populationId, nodeTracker);
