@@ -3,7 +3,8 @@
     "checkJs": true,
     "strict": true,
     "noEmit": true,
-    "lib": ["es6", "dom"]
+    "lib": ["es6", "dom"],
+    "target": "es6"
   },
   "include": ["src/**/*.js"]
 }
