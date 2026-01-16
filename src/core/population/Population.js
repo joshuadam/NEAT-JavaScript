@@ -53,9 +53,9 @@ class Population {
         newSpecies.addGenome(genome);
         this.species.push(newSpecies);
       }
-      this.species = this.species.filter(s => s.genomes.length > 0);
-      this.species.forEach(s => s.setRandomRepresentative());
     }
+    this.species = this.species.filter(s => s.genomes.length > 0);
+    this.species.forEach(s => s.setRandomRepresentative());
     this.speciated = true;
   }
 
