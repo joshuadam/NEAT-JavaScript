@@ -3,22 +3,50 @@ const StaticManager = require("../../util/StaticManager");
 const PopulationTracker = require("../../util/trackers/PopulationTracker");
 const Species = require("./Species");
 
-class Population {
-  constructor(config) {
-    this.genomes = [];
+/** @typedef {import('../../config/Config')} Config */
+/** @typedef {import('../genome/Genome')} Genome */
+/** @typedef {import('../../util/trackers/InnovationTracker')} InnovationTracker */
 
+/**
+ * The Population class is responsible for managing a collection of 
+ * genomes and evolving them through generations using the NEAT algorithm. 
+ * It handles speciation, fitness evaluation, selection, and reproduction 
+ * to improve solutions over time.
+ */
+class Population {
+  /**
+   * Creates a new population with genomes initialized according 
+   * to the provided configuration.
+   * @param {Config} config - Configuration object containing parameters for the population and NEAT algorithm
+   */
+  constructor(config) {
+    /** @type {Genome[]} */
+    this.genomes = [];
+    /** @type {Species[]} */
     this.species = [];
+    /** @type {Genome[]} */
     this.eliteGenomes = [];
+    /** @type {Genome[]} */
     this.newGeneration = [];
+    /** @type {Config} */
     this.config = config;
+    /** @type {boolean} */
     this.allStagnated = false;
+    /** @type {boolean} */
     this.stale = false;
+    /** @type {number} */
     this.populationId = PopulationTracker.getNextPopulationId();
+    /** @type {InnovationTracker} */
     this.innovationTracker = StaticManager.getInnovationTracker(this.populationId);
+    /** @type {number} */
     this.generation = 0;
+    /** @type {number} */
     this.speciesCounter = 0;
+    /** @type {number} */
     this.bestFitness = 0;
+    /** @type {number} */
     this.ageSinceLastImprovement = 0;
+    /** @type {boolean} */
     this.speciated = false;
 
     let baseGenome = GenomeBuilder.buildGenome(config, this.populationId);
@@ -31,6 +59,11 @@ class Population {
     }
   }
 
+  /**
+   * Divides the population into species based on the genetic similarity between 
+   * genomes. Genomes are grouped into species when their compatibility distance 
+   * is below the compatibility threshold defined in the configuration.
+   */
   speciate() {
     for (let species of this.species) {
       species.genomes = [];
@@ -59,6 +92,11 @@ class Population {
     this.speciated = true;
   }
 
+  /**
+   * Advances the population to the next generation by performing the complete 
+   * evolutionary process. This includes speciation, stagnation handling, 
+   * selection, reproduction, and elite preservation.
+   */
   evolve() {
     this.stale = false;
     this.allStagnated = false;
@@ -84,12 +122,24 @@ class Population {
     this.speciated = false;
   }
 
+  /**
+   * Evaluates the fitness of all genomes in the population using the fitness 
+   * function provided in the configuration. This method must be called before 
+   * evolve() to ensure proper selection and reproduction based on fitness values.
+   * 
+   * The fitness function should be defined in the configuration object and will 
+   * be applied to each genome in the population. If a fitness function is not 
+   * provided, you will need to manually assign fitness values to each genome.
+   */
   evaluatePopulation() {
     for (const genome of this.genomes) {
       genome.evaluateFitness();
     }
   }
 
+  /**
+   * Saves the elite genomes from the current generation.
+   */
   saveEliteGenomes() {
     this.genomes.sort((a, b) => b.fitness - a.fitness);
 
@@ -121,6 +171,9 @@ class Population {
   }
 
 
+  /**
+   * Handles stagnation detection and removal of stale species.
+   */
   handleStagnation() {
     this.updateFitnessAndStagnation();
     for (const species of this.species) {
@@ -137,6 +190,10 @@ class Population {
     this.removeStale();
   }
 
+  /**
+   * Updates the population's best fitness and stagnation tracking.
+   * Marks the population as stale if no improvement has been made for too long.
+   */
   updateFitnessAndStagnation() {
     let currentBest = this.getBestGenome().fitness;
     if (currentBest > this.bestFitness) {
@@ -150,6 +207,9 @@ class Population {
     }
   }
 
+  /**
+   * Removes stale species from the population.
+   */
   removeStale() {
     this.species.sort((a, b) => b.getBestGenome().fitness - a.getBestGenome().fitness);
 
@@ -174,6 +234,10 @@ class Population {
     }
   }
 
+  /**
+   * Returns the genome with the highest fitness value in the current population.
+   * @returns {Genome} The genome with the highest fitness in the population
+   */
   getBestGenome() {
     let bestGenome = this.genomes[0];
     for (const genome of this.genomes) {
@@ -184,12 +248,19 @@ class Population {
     return bestGenome;
   }
 
+  /**
+   * Removes the worst performing genomes from each species.
+   * Keeps only the top-performing genomes based on the survival rate.
+   */
   removeWorstGenomes() {
     for (const species of this.species) {
       species.removeBadGenomes();
     }
   }
 
+  /**
+   * Calculates the number of offspring each species should produce.
+   */
   calculateOffspring() {
     const remainingPopulation = this.config.populationSize - this.eliteGenomes.length;
     let totalAdjustedFitness = 0;
@@ -230,6 +301,10 @@ class Population {
     }
   }
 
+  /**
+   * Selects the species with the highest best fitness.
+   * @returns {Species} The best performing species.
+   */
   selectBestSpecies() {
     let bestSpecies = this.species[0];
     for (const species of this.species) {
@@ -240,9 +315,13 @@ class Population {
     return bestSpecies;
   }
 
+  /**
+   * Generates offspring for the next generation.
+   */
   generateOffspring() {
     this.species.forEach(s => {
       const offspringCount = s.offspringCount;
+      /** @type {Genome[]} */
       const mutatedOnlyGenomes = [];
 
       for (let i = 0; i < offspringCount; i++) {
@@ -252,6 +331,7 @@ class Population {
           let selectedGenome = s.genomes[Math.floor(Math.random() * genomesInSpecies)];
           while (
             genomesInSpecies > 1 &&
+            /** @ts-ignore */
             mutatedOnlyGenomes.includes(selectedGenome) &&
             i < genomesInSpecies
           ) {
@@ -290,6 +370,7 @@ class Population {
               parentsFound = true;
             }
           }
+          /** @ts-ignore */
           offspring = parent1.crossover(parent2);
           if (Math.random() <= this.config.mutationRate) {
             offspring.mutate();
@@ -303,6 +384,10 @@ class Population {
     });
   }
 
+  /**
+   * Adds elite genomes back into the new generation.
+   * Ensures the best genomes are preserved across generations.
+   */
   putBackElite() {
     for (const eliteGenome of this.eliteGenomes) {
       this.newGeneration.push(eliteGenome);
