@@ -42,7 +42,7 @@ class Species {
     } else {
       this.generationsSinceImprovement++;
     }
-    if (this.generationsSinceImprovement > this.config.dropoffAge) {
+    if (this.generationsSinceImprovement > this.config.dropOffAge) {
       this.stagnated = true;
     }
   }
