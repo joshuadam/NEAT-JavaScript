@@ -205,20 +205,20 @@ class GeneticEncoding {
    */
   calculateAverageWeightDifference(otherParent) {
     let totalWeightDifference = 0;
-    let matchinigGenesCount = 0;
+    let matchingGenesCount = 0;
 
     for (const [innovationNumber, connection] of this.connectionGenesMap) {
       if (otherParent.hasInnovationNumber(innovationNumber)) {
         let otherGene = otherParent.getConnectionByInnovationNumber(innovationNumber);
         let weightDifference = Math.abs(connection.weight - otherGene.weight);
         totalWeightDifference += weightDifference;
-        matchinigGenesCount++;
+        matchingGenesCount++;
       }
     }
-    if (matchinigGenesCount === 0) {
+    if (matchingGenesCount === 0) {
       return 0;
     }
-    return totalWeightDifference / matchinigGenesCount;
+    return totalWeightDifference / matchingGenesCount;
   }
 
   /**

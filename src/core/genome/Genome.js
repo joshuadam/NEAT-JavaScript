@@ -150,7 +150,7 @@ class Genome {
         connection.reinitializeWeight();
       } else {
         let weight = connection.weight;
-        let perturb = this.config.minPerturb + (this.config.maxPerturb - this.config.minPerturb) * Math.random();;
+        let perturb = this.config.minPerturb + (this.config.maxPerturb - this.config.minPerturb) * Math.random();
         let newWeight = weight + perturb;
         newWeight = Math.max(minWeight, Math.min(newWeight, maxWeight));
         connection.weight = newWeight;
