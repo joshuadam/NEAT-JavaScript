@@ -2,6 +2,11 @@
   "name": "neat-javascript",
   "version": "1.0.1",
   "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "build:types": "tsc -p tsconfig.types.json",
+    "prepublishOnly": "npm run build:types"
+  },
   "description": "A JavaScript implementation of the NEAT (NeuroEvolution of Augmenting Topologies) algorithm for evolving artificial neural networks.",
   "keywords": [
     "NEAT",
@@ -22,11 +27,13 @@
   },
   "homepage": "https://neat-javascript.org",
   "devDependencies": {
+    "typescript": "^5.7.0",
     "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1"
   },
   "files": [
     "src",
+    "types",
     "README.md",
     "LICENSE"
   ]
