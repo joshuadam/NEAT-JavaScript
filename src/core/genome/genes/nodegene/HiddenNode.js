@@ -2,7 +2,19 @@ const NodeGene = require('./NodeGene');
 const BiasNode = require('./BiasNode');
 const NodeType = require('./NodeType');
 
+/** @typedef {import('../../../../config/Config')} Config */
+/** @typedef {import('../connectiongene/ConnectionGene')} ConnectionGene */
+/** @typedef {import('../../../../activationfunction/ActivationFunction')} ActivationFunction */
+
+/**
+ * Represents a hidden node in a NEAT neural network.
+ */
 class HiddenNode extends NodeGene {
+  /**
+   * Creates a new hidden node.
+   * @param {number} id - The unique identifier for this node.
+   * @param {Config} config - The configuration object.
+   */
   constructor(id, config) {
     super(id, config);
     this.nodeType = NodeType.HIDDEN;
@@ -14,6 +26,11 @@ class HiddenNode extends NodeGene {
     this.inputs = [];
   }
 
+  /**
+   * Receives an input value from an incoming connection.
+   * When all expected inputs are received, triggers activation.
+   * @param {number} input - The input value from a connection.
+   */
   feedInput(input) {
     this.inputs.push(input);
     this.receivedInputs++;
@@ -22,6 +39,10 @@ class HiddenNode extends NodeGene {
     }
   }
 
+  /**
+   * Activates the node
+   * @param {number[]} inputs - Array of input values from incoming connections.
+   */
   activate(inputs) {
     let sum = 0;
     for (let i = 0; i < inputs.length; i++) {
@@ -67,6 +88,10 @@ class HiddenNode extends NodeGene {
     }
   }
 
+  /**
+   * Adds an incoming connection to this node.
+   * @param {ConnectionGene} connection - The incoming connection to add.
+   */
   addIncomingConnection(connection) {
     this.incomingConnections.push(connection);
     if (connection.recurrent) {
@@ -77,14 +102,26 @@ class HiddenNode extends NodeGene {
     }
   }
 
+  /**
+   * Adds an outgoing connection from this node.
+   * @param {ConnectionGene} connection - The outgoing connection to add.
+   */
   addOutgoingConnection(connection) {
     this.outgoingConnections.push(connection);
   }
 
+  /**
+   * Indicates whether this node can accept incoming connections.
+   * @returns {boolean} Always returns true for hidden nodes.
+   */
   acceptsIncomingConnections() {
     return true;
   }
 
+  /**
+   * Indicates whether this node can accept outgoing connections.
+   * @returns {boolean} Always returns true for hidden nodes.
+   */
   acceptsOutgoingConnections() {
     return true;
   }

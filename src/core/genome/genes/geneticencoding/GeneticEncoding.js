@@ -7,7 +7,18 @@ const BiasNode = require("../nodegene/BiasNode");
 const ConnectionGene = require('../connectiongene/ConnectionGene')
 const NodeType = require('../nodegene/NodeType');
 
+/** @typedef {import('../../../../config/Config')} Config */
+/** @typedef {import('../../Genome')} Genome */
+
+/**
+ * Represents the genetic encoding of a genome
+ */
 class GeneticEncoding {
+  /**
+   * Creates a new GeneticEncoding instance.
+   * @param {Config} config - The configuration object.
+   * @param {number} populationId - The ID of the population this encoding belongs to.
+   */
   constructor(config, populationId) {
     this.config = config;
     this.nodeGenesMap = new Map();
@@ -19,6 +30,10 @@ class GeneticEncoding {
     this.populationId = populationId;
   }
 
+  /**
+   * Load genome
+   * @param {Genome} genome - The genome to load data from.
+   */
   loadGenome(genome) {
     this.nodeGenesMap.clear();
     this.connectionGenesMap.clear();
@@ -40,6 +55,12 @@ class GeneticEncoding {
     this.fitness = genome.fitness;
   }
 
+  /**
+   * Performs crossover between this encoding and another parent encoding.
+   * Genes are inherited from the fitter parent, with matching genes randomly selected.
+   * @param {GeneticEncoding} otherParent - The other parent for crossover.
+   * @returns {GeneticEncoding} A new GeneticEncoding representing the offspring.
+   */
   crossover(otherParent) {
     let offspring = new GeneticEncoding(this.config, this.populationId);
     let thisFitness = this.fitness;
@@ -91,6 +112,12 @@ class GeneticEncoding {
     return offspring;
   }
 
+  /**
+   * Calculates the compatibility distance between this encoding and another.
+   * Used for speciation to determine if two genomes belong to the same species.
+   * @param {GeneticEncoding} otherParent - The other encoding to compare with.
+   * @returns {number} The compatibility distance value.
+   */
   calculateCompatibilityDistance(otherParent) {
     const disjointGenes = this.getNumberOfDisjointGenes(otherParent);
     const excessGenes = this.getNumberOfExcessGenes(otherParent);
@@ -99,6 +126,11 @@ class GeneticEncoding {
     return ((this.config.c1 * excessGenes) / maxGenes) + ((this.config.c2 * disjointGenes) / maxGenes) + ((this.config.c3 * this.calculateAverageWeightDifference(otherParent)));
   }
 
+  /**
+   * Counts the number of matching genes between this encoding and another.
+   * @param {GeneticEncoding} otherParent - The other encoding to compare with.
+   * @returns {number} The count of matching genes.
+   */
   getNumberOfMatchingGenes(otherParent) {
     let matchingGenes = 0;
     for (const innovationNumber of this.connectionGenesMap.keys()) {
@@ -109,6 +141,12 @@ class GeneticEncoding {
     return matchingGenes;
   }
 
+  /**
+   * Counts the number of disjoint genes between this encoding and another.
+   * Disjoint genes are non-matching genes within the range of both genomes' innovation numbers.
+   * @param {GeneticEncoding} otherParent - The other encoding to compare with.
+   * @returns {number} The count of disjoint genes.
+   */
   getNumberOfDisjointGenes(otherParent) {
     let disjointGenes = 0;
     const maxInnovationSelf = this.getHighestInnovationNumber();
@@ -130,6 +168,12 @@ class GeneticEncoding {
     return disjointGenes;
   }
 
+  /**
+   * Counts the number of excess genes between this encoding and another.
+   * Excess genes are genes in the larger genome that exceed the innovation number range of the smaller genome.
+   * @param {GeneticEncoding} otherParent - The other encoding to compare with.
+   * @returns {number} The count of excess genes.
+   */
   getNumberOfExcessGenes(otherParent) {
     let excessGenes = 0;
     const maxInnovationSelf = this.getHighestInnovationNumber();
@@ -145,24 +189,34 @@ class GeneticEncoding {
     return excessGenes;
   }
 
+  /**
+   * Calculates the average weight difference between matching genes.
+   * @param {GeneticEncoding} otherParent - The other encoding to compare with.
+   * @returns {number} The average absolute weight difference of matching genes.
+   */
   calculateAverageWeightDifference(otherParent) {
     let totalWeightDifference = 0;
-    let matchinigGenesCount = 0;
+    let matchingGenesCount = 0;
 
     for (const [innovationNumber, connection] of this.connectionGenesMap) {
       if (otherParent.hasInnovationNumber(innovationNumber)) {
         let otherGene = otherParent.getConnectionByInnovationNumber(innovationNumber);
         let weightDifference = Math.abs(connection.weight - otherGene.weight);
         totalWeightDifference += weightDifference;
-        matchinigGenesCount++;
+        matchingGenesCount++;
       }
     }
-    if (matchinigGenesCount === 0) {
+    if (matchingGenesCount === 0) {
       return 0;
     }
-    return totalWeightDifference / matchinigGenesCount;
+    return totalWeightDifference / matchingGenesCount;
   }
 
+  /**
+   * Builds a new Genome instance from this genetic encoding.
+   * Creates new node and connection gene objects based on the stored data.
+   * @returns {Genome} A new Genome instance.
+   */
   buildGenome() {
     const Genome = require('../../Genome');
     let newNodeGenesMap = new Map();
@@ -214,6 +268,13 @@ class GeneticEncoding {
     return genome;
   }
 
+  /**
+   * Adds a connection and its associated nodes to this encoding.
+   * @param {ConnectionGeneData} connection - The connection data to add.
+   * @param {boolean} enabled - Whether the connection should be enabled.
+   * @param {GeneticEncoding} parent - The parent encoding to get node types from.
+   * @param {GeneticEncoding} bestParent - The best parent encoding.
+   */
   addConnectionAndNodes(connection, enabled, parent, bestParent) {
     let outNodeType = parent.getNodeById(connection.outNodeId).nodeType;
     if (outNodeType === NodeType.INPUT) {
@@ -238,15 +299,30 @@ class GeneticEncoding {
     this.addNode(outNode);
   }
 
+  /**
+   * Gets the highest innovation number in this encoding.
+   * @returns {number} The highest innovation number, or 0 if no connections exist.
+   */
   getHighestInnovationNumber() {
     const highestInnovationNumber = Math.max(...Array.from(this.connectionGenesMap.keys()), 0);
     return highestInnovationNumber;
   }
 
+  /**
+   * Checks if this encoding contains a connection with the given innovation number.
+   * @param {number} innovationNumber - The innovation number to check.
+   * @returns {boolean} True if the innovation number exists in this encoding.
+   */
   hasInnovationNumber(innovationNumber) {
     return this.connectionGenesMap.has(innovationNumber);
   }
 
+  /**
+   * Gets a node by its ID.
+   * @param {number} id - The node ID.
+   * @returns {NodeGeneData} The node data.
+   * @throws {Error} If the node ID does not exist.
+   */
   getNodeById(id) {
     if (!this.nodeGenesMap.has(id)) {
       throw new Error(`Error: Node with ID ${id} does not exist.`);
@@ -254,10 +330,20 @@ class GeneticEncoding {
     return this.nodeGenesMap.get(id);
   }
 
+  /**
+   * Gets a connection by its innovation number.
+   * @param {number} innovationNumber - The innovation number.
+   * @returns {ConnectionGeneData} The connection data.
+   */
   getConnectionByInnovationNumber(innovationNumber) {
     return this.connectionGenesMap.get(innovationNumber);
   }
 
+  /**
+   * Adds a connection to this encoding if it doesn't already exist.
+   * Connections with the same in/out node pair are not duplicated.
+   * @param {ConnectionGeneData} connection - The connection data to add.
+   */
   addConnection(connection) {
     for (let existingConnection of this.connectionGenesMap.values()) {
       if (existingConnection.inNodeId === connection.inNodeId &&
@@ -268,10 +354,19 @@ class GeneticEncoding {
     this.connectionGenesMap.set(connection.innovationNumber, connection);
   }
 
+  /**
+   * Checks if this encoding contains a node with the given ID.
+   * @param {number} nodeId - The node ID to check.
+   * @returns {boolean} True if the node ID exists in this encoding.
+   */
   hasNodeId(nodeId) {
     return this.nodeGenesMap.has(nodeId);
   }
 
+  /**
+   * Adds a node to this encoding if it doesn't already exist.
+   * @param {NodeGeneData} node - The node data to add.
+   */
   addNode(node) {
     if (this.nodeGenesMap.has(node.id)) {
       return;

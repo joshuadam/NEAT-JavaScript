@@ -42,6 +42,10 @@ For a quick-start guide, check out [this](https://neat-javascript.org/quickstart
 
 We welcome contributions! Please open an issue first to discuss your proposed updates.
 
+## Contact
+
+Have questions, feedback or want to share a cool project you've built? Feel free to reach out at joshua@neat-javascript.org
+
 ## License
 
 This project is licensed under the [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.txt).

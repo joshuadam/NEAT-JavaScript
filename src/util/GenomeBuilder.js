@@ -7,7 +7,23 @@ const OutputNode = require('../core/genome/genes/nodegene/OutputNode');
 const BiasNode = require('../core/genome/genes/nodegene/BiasNode');
 const ConnectionGene = require('../core/genome/genes/connectiongene/ConnectionGene');
 
+/** @typedef {import('../config/Config')} Config */
+/** @typedef {import('../core/genome/genes/nodegene/NodeGene')} NodeGene */
+
+/**
+ * This class provides a convenient way to create genomes with
+ * a standard topology determined by your configuration settings. This
+ * approach is recommended for initializing populations with consistent
+ * starting topologies.
+ */
 class GenomeBuilder {
+  /**
+   * Creates a new genome with input and output nodes
+   * connected according to the configuration parameters.
+   * @param {Config} config - Configuration object containing parameters for genome creation
+   * @param {number} populationId - ID of the population this genome belongs to
+   * @returns {Genome} A new genome with the specified topology
+   */
   static buildGenome(config, populationId = PopulationTracker.getNextPopulationId()) {
     let numInputs = config.inputSize;
     let numOutputs = config.outputSize;
@@ -73,6 +89,13 @@ class GenomeBuilder {
     return new Genome(nodeGenes, connectionGenes, config, populationId);
   }
 
+  /**
+   * Recreates a genome from its JSON representation.
+   * @param {string} jsonData - JSON string representation of a genome
+   * @param {Config} config - Configuration parameters for the genome
+   * @returns {Genome} A reconstructed genome with the same structure and weights
+   * @throws {Error} If the JSON contains an unknown node type or invalid connection references.
+   */
   static loadGenome(jsonData, config) {
     const parsedData = JSON.parse(jsonData);
 

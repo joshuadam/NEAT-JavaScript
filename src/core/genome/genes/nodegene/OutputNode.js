@@ -2,7 +2,18 @@ const NodeGene = require('./NodeGene');
 const BiasNode = require('./BiasNode');
 const NodeType = require('./NodeType');
 
+/** @typedef {import('../../../../config/Config')} Config */
+/** @typedef {import('../connectiongene/ConnectionGene')} ConnectionGene */
+
+/**
+ * Represents an output node in the neural network.
+ */
 class OutputNode extends NodeGene {
+  /**
+   * Creates a new output node.
+   * @param {number} id - The unique identifier for this node.
+   * @param {Config} config - The configuration object.
+   */
   constructor(id, config) {
     super(id, config);
     this.nodeType = NodeType.OUTPUT;
@@ -15,6 +26,10 @@ class OutputNode extends NodeGene {
     this.numInputsReceived = 0;
   }
 
+  /**
+   * Receives an input value and triggers activation when all expected inputs are received.
+   * @param {number} input - The input value received from an incoming connection.
+   */
   feedInput(input) {
     this.inputs.push(input);
     this.receivedInputs++;
@@ -23,6 +38,11 @@ class OutputNode extends NodeGene {
     }
   }
 
+  /**
+   * Activates the output node by summing all inputs and applying the activation function.
+   * Handles recurrent connections and bias based on the configured bias mode.
+   * @param {number[]} inputs - Array of input values to sum.
+   */
   activate(inputs) {
     let sum = 0;
     for (let i = 0; i < inputs.length; i++) {
@@ -55,10 +75,17 @@ class OutputNode extends NodeGene {
     this.receivedInputs = 0;
   }
 
+  /**
+   * Increments the expected input count for this node.
+   */
   forwardExpectedInput() {
     this.expectedInputs++;
   }
 
+  /**
+   * Adds an incoming connection to this node.
+   * @param {ConnectionGene} connection - The incoming connection to add.
+   */
   addIncomingConnection(connection) {
     this.incomingConnections.push(connection);
     if (connection.recurrent) {
@@ -69,14 +96,26 @@ class OutputNode extends NodeGene {
     }
   }
 
+  /**
+   * Adds an outgoing connection from this node.
+   * @param {ConnectionGene} connection - The outgoing connection to add.
+   */
   addOutgoingConnection(connection) {
     this.outgoingConnections.push(connection);
   }
 
+  /**
+   * Indicates whether this node can accept incoming connections.
+   * @returns {boolean} - Always returns true for output nodes.
+   */
   acceptsIncomingConnections() {
     return true;
   }
 
+  /**
+   * Indicates whether this node can have outgoing connections.
+   * @returns {boolean} - Always returns false for output nodes.
+   */
   acceptsOutgoingConnections() {
     return false;
   }

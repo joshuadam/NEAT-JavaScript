@@ -1,19 +1,44 @@
 const StaticManager = require('../StaticManager');
 
+/** @typedef {import('../../core/genome/genes/connectiongene/ConnectionGene')} ConnectionGene */
+
+/**
+ * Tracks innovation numbers
+ */
 class InnovationTracker {
   static InnovationType = Object.freeze({
     addConnection: 'addConnection',
     addNode: 'addNode'
   });
+
+  /**
+   * @typedef {Object} InnovationData
+   * @property {number} inNodeId
+   * @property {number} outNodeId
+   * @property {number} innovationNumber
+   */
+
+  /**
+   * Creates a new InnovationTracker instance.
+   */
   constructor() {
     this.innovationMap = new Map();
     this.innovationCounter = 0;
   }
 
+  /**
+   * Discards all tracked innovations.
+   */
   reset() {
     this.innovationMap.clear();
   }
 
+  /**
+   * Tracks an innovation
+   * @param {number} inNodeId
+   * @param {number} outNodeId
+   * @returns {InnovationData}
+   */
   trackInnovation(inNodeId, outNodeId) {
     const mutationKey = this.generateMutationKey(InnovationTracker.InnovationType.addConnection, inNodeId, outNodeId);
     
@@ -32,6 +57,12 @@ class InnovationTracker {
     }
   }
 
+  /**
+   * Tracks an innovation for adding a new node
+   * @param {ConnectionGene} existingConnection
+   * @param {number} populationId
+   * @returns {{inToNew: InnovationData, newToOut: InnovationData, newNodeId: number}}
+   */
   trackAddNodeInnovation(existingConnection, populationId) {
     const nodeTracker = StaticManager.getNodeTracker(populationId);
     const mutationKey = this.generateMutationKey(InnovationTracker.InnovationType.addNode, existingConnection.inNode.id, existingConnection.outNode.id);
@@ -64,6 +95,13 @@ class InnovationTracker {
     };
   }
 
+  /**
+   * Generates a unique key for identifying a mutation.
+   * @param {string} innovationType - The type of innovation (from InnovationType enum).
+   * @param {number} inNodeId - The ID of the source node.
+   * @param {number} outNodeId - The ID of the target node.
+   * @returns {string} A unique key string for this mutation.
+   */
   generateMutationKey(innovationType, inNodeId, outNodeId) {
     return `${innovationType}-${inNodeId}-${outNodeId}`;
   }

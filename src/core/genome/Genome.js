@@ -6,7 +6,27 @@ const ConnectionGene = require('./genes/connectiongene/ConnectionGene');
 const StaticManager = require('../../util/StaticManager');
 const GeneticEncoding = require('./genes/geneticencoding/GeneticEncoding');
 
+/** @typedef {import('../../config/Config')} Config */
+/** @typedef {import('./genes/nodegene/NodeGene')} NodeGene */
+/** @typedef {import('../../util/trackers/GenomeTracker')} GenomeTracker */
+/** @typedef {import('../../util/trackers/NodeTracker')} NodeTracker */
+/** @typedef {import('../../util/trackers/InnovationTracker')} InnovationTracker */
+
+/**
+ * The Genome class is the core genetic representation in NEAT.
+ * It encodes the structure and parameters of a neural network,
+ * including nodes (neurons) and connections between them. Each
+ * genome can be expressed as a neural network for evaluation,
+ * and can undergo genetic operations like mutation and crossover.
+ */
 class Genome {
+  /**
+   * Creates a new genome with the specified nodes, connections, configuration, and population ID.
+   * @param {NodeGene[]} nodeGenes - Array of node genes (InputNode, HiddenNode, OutputNode, BiasNode)
+   * @param {ConnectionGene[]} connectionGenes - Array of connection genes
+   * @param {Config} config - Configuration parameters for the genome
+   * @param {number} populationId - ID of the population this genome belongs to
+   */
   constructor(nodeGenes, connectionGenes, config, populationId) {
     this.nodeGenes = nodeGenes;
     this.connectionGenes = connectionGenes;
@@ -23,6 +43,12 @@ class Genome {
     this.populationId = populationId;
   }
 
+  /**
+   * Activates the neural network represented by the genome with
+   * the given inputs and returns the outputs.
+   * @param {number[]} inputs - Array of input values for the network
+   * @returns {number[]} Array of output values produced by the network
+   */
   propagate(inputs) {
     this.calculateExpectedInputs();
     for (let i = 0; i < inputs.length; i++) {
@@ -39,12 +65,19 @@ class Genome {
     return outputs;
   }
 
+  /**
+   * Resets the internal state of all nodes in the network.
+   * This is particularly useful when working with recurrent networks.
+   */
   resetState() {
     for (const node of this.nodeGenes) {
       node.resetState();
     }
   }
 
+  /**
+   * Calculates the expected number of inputs for each node in the network.
+   */
   calculateExpectedInputs() {
     for (const node of this.nodeGenes) {
       node.expectedInputs = 0;
@@ -60,10 +93,20 @@ class Genome {
     }
   }
 
+  /**
+   * Finds a node in the genome by its ID.
+   * @param {number} nodeid - The ID of the node to find.
+   * @returns {NodeGene} The node with the given ID
+   */
   getNodeById(nodeid) {
     return this.nodeGenes.find(node => node.id === nodeid) || null;
   }
 
+  /**
+   * Applies random mutations to the genome according to the
+   * rates defined in the configuration. Mutations can include
+   * weight changes, adding connections, or adding nodes.
+   */
   mutate() {
     const weightMutationRate = this.config.weightMutationRate;
     const addConnectionMutationRate = this.config.addConnectionMutationRate;
@@ -80,6 +123,11 @@ class Genome {
     }
   }
 
+  /**
+   * Mutates the weights of existing connections. Each connection's
+   * weight may be either perturbed or completely reinitialized
+   * according to the configuration parameters.
+   */
   mutateWeights() {
     const minWeight = this.config.minWeight;
     const maxWeight = this.config.maxWeight;
@@ -89,7 +137,7 @@ class Genome {
         connection.reinitializeWeight();
       } else {
         let weight = connection.weight;
-        let perturb = this.config.minPerturb + (this.config.maxPerturb - this.config.minPerturb) * Math.random();;
+        let perturb = this.config.minPerturb + (this.config.maxPerturb - this.config.minPerturb) * Math.random();
         let newWeight = weight + perturb;
         newWeight = Math.max(minWeight, Math.min(newWeight, maxWeight));
         connection.weight = newWeight;
@@ -97,6 +145,11 @@ class Genome {
     }
   }
 
+  /**
+   * Attempts to add a new connection between two existing nodes.
+   * Checks for existing connections and potential recursion
+   * before adding.
+   */
   mutateAddConnection() {
     let fromNode;
     let toNode;
@@ -147,6 +200,11 @@ class Genome {
     }
   }
 
+  /**
+   * Adds a new hidden node by splitting an existing connection.
+   * The original connection is disabled, and two new
+   * connections are created.
+   */
   mutateAddNode() {
     if (this.connectionGenes.length < 1) {
       return;
@@ -184,6 +242,13 @@ class Genome {
     this.connectionGenes.push(connection2);
   }
 
+  /**
+   * Checks if a connection between two nodes is recurrent.
+   * A connection is recurrent if it creates a cycle in the network.
+   * @param {NodeGene} fromNode - The source node of the potential connection.
+   * @param {NodeGene} toNode - The target node of the potential connection.
+   * @returns {boolean} True if the connection is recurrent, false otherwise.
+   */
   checkIfRecurrent(fromNode, toNode) {
     let recurrent = false;
 
@@ -222,18 +287,30 @@ class Genome {
     return recurrent;
   }
 
+  /**
+   * Updates the recurrent flag for all connections in the genome.
+   */
   checkForRecurrentConnections() {
     this.connectionGenes.forEach(connection => {
       connection.recurrent = this.checkIfRecurrent(connection.inNode, connection.outNode);
     });
   }
 
+  /**
+   * Reinitializes all connection weights according to the
+   * weight initialization method in the configuration.
+   */
   reinitializeWeights() {
     for (const connection of this.connectionGenes) {
       connection.reinitializeWeight();
     }
   }
 
+  /**
+   * Creates a deep copy of the genome with the same structure
+   * and weights but as a separate object.
+   * @returns {Genome} A new genome identical to the original
+   */
   copy() {
     const newNodes = [];
     const newConnections = [];
@@ -279,6 +356,12 @@ class Genome {
     return new Genome(newNodes, newConnections, this.config, this.populationId);
   }
 
+  /**
+   * Compares this genome with another to check if they are
+   * structurally and parametrically identical.
+   * @param {Genome} genome - The genome to compare with
+   * @returns {boolean} True if the genomes are identical, false otherwise
+   */
   equalsGenome(genome) {
     if (
       this.nodeGenes.length !== genome.nodeGenes.length ||
@@ -295,6 +378,10 @@ class Genome {
     return true;
   }
 
+  /**
+   * Creates a genetic encoding representation of this genome.
+   * @returns {GeneticEncoding} The genetic encoding of this genome.
+   */
   getGeneticEncoding() {
     const geneticEncoding = new GeneticEncoding(this.config, this.populationId);
     geneticEncoding.loadGenome(this);
@@ -302,6 +389,13 @@ class Genome {
     return geneticEncoding;
   }
 
+  /**
+   * Performs crossover between this genome and another parent genome
+   * to create an offspring. Genes are inherited from both parents
+   * according to their fitness values.
+   * @param {Genome} parent2 - The second parent genome
+   * @returns {Genome} A new genome created from the genetic material of both parents
+   */
   crossover(parent2) {
     const parent1Encoding = this.getGeneticEncoding();
     const parent2Encoding = parent2.getGeneticEncoding();
@@ -312,10 +406,19 @@ class Genome {
     return offspringGenome;
   }
 
+  /**
+   * Evaluates the genome's fitness using the fitness function specified in
+   * the configuration. If no fitness function is provided, fitness must
+   * be assigned manually.
+   */
   evaluateFitness() {
     this.fitness = this.config.fitnessFunction.calculateFitness(this);
   }
 
+  /**
+   * Converts the genome to a JSON string representation for storage or transmission.
+   * @returns {string} JSON string representation of the genome
+   */
   toJSON() {
     const jsonGenome = {
       id: this.id,
@@ -338,6 +441,12 @@ class Genome {
     return JSON.stringify(jsonGenome, null, 2);
   }
 
+  /**
+   * Removes disconnected hidden nodes and disabled connections from the
+   * genome to optimize its structure. This can be useful after learning
+   * a given task to minimize the network size.
+   * @param {boolean} removeDisabledConnections - If true, also removes disabled connections.
+   */
   prune(removeDisabledConnections = false) {
     if (removeDisabledConnections) {
       const disabledConnections = this.connectionGenes.filter(conn => !conn.enabled);

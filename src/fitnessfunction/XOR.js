@@ -1,6 +1,19 @@
 const FitnessFunction = require('./FitnessFunction');
 
+/** @typedef {import('../core/genome/Genome')} Genome */
+
+/**
+ * Evaluates fitness based on the XOR problem (built-in test case)
+ * @extends FitnessFunction
+ */
 class XOR extends FitnessFunction {
+  /**
+   * Calculates the fitness of a genome based on its performance on the XOR problem.
+   * The fitness is computed as 1 / (1 + squared_error), where squared_error is the
+   * sum of squared differences between expected and actual outputs.
+   * @param {Genome} genome - The genome to evaluate.
+   * @returns {number} A fitness value in the range (0, 1], where 1 is a perfect solution.
+   */
   calculateFitness(genome) {
     const inputs = [
       [0, 0],
