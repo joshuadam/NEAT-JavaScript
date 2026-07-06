@@ -13,9 +13,7 @@ class RandomWeightInitialization extends WeightInitialization {
    */
   constructor(min, max) {
     super();
-    /** @type {number} */
     this.min = min;
-    /** @type {number} */
     this.max = max;
   }
 

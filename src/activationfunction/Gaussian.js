@@ -17,12 +17,10 @@ class Gaussian extends ActivationFunction {
    */
   constructor(center = 0, width = 1) {
     super();
-    /** @type {number} */
     this.center = center;
-    /** @type {number} */
     this.width = width;
   }
-
+  
   /**
    * Applies the Gaussian activation function to a value.
    * @param {number} value - The input value.

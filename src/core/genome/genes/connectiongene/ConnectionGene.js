@@ -19,26 +19,16 @@ class ConnectionGene {
    * @param {Config} config - The configuration object.
    */
   constructor(inNode, outNode, weight, enabled, innovationNumber, recurrent, config) {
-    /** @type {NodeGene} */
     this.inNode = inNode;
-    /** @type {NodeGene} */
     this.outNode = outNode;
-    /** @type {number} */
     this.weight = weight;
-    /** @type {boolean} */
     this.enabled = enabled;
-    /** @type {number} */
     this.innovationNumber = innovationNumber;
-    /** @type {boolean} */
     this.recurrent = recurrent;
-    /** @type {Config} */
     this.config = config;
-    /** @type {boolean} */
     this.forwardedExpectedInput = false;
 
-    /** @ts-ignore */
     inNode.addOutgoingConnection(this);
-    /** @ts-ignore */
     outNode.addIncomingConnection(this);
   }
 
@@ -48,7 +38,6 @@ class ConnectionGene {
    */
   feedForward(input) {
     if (this.enabled && !this.recurrent) {
-      /** @ts-ignore */
       this.outNode.feedInput(input * this.weight);
     }
   }

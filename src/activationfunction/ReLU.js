@@ -1,5 +1,4 @@
 const ActivationFunction = require('./ActivationFunction');
-
 /**
  * Rectified Linear Unit passes positive inputs unchanged 
  * and turns negative inputs to zero. Computationally 
@@ -19,5 +18,4 @@ class ReLU extends ActivationFunction {
     return Math.max(0, value);
   }
 }
-
 module.exports = ReLU;

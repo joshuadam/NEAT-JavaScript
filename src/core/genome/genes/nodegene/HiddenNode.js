@@ -17,19 +17,12 @@ class HiddenNode extends NodeGene {
    */
   constructor(id, config) {
     super(id, config);
-    /** @type {'HIDDEN'} */
     this.nodeType = NodeType.HIDDEN;
-    /** @type {ActivationFunction} */
     this.activationFunction = config.activationFunction;
-    /** @type {ConnectionGene[]} */
     this.incomingConnections = [];
-    /** @type {ConnectionGene[]} */
     this.outgoingConnections = [];
-    /** @type {ConnectionGene[]} */
     this.inComingRecurrentConnections = [];
-    /** @type {ConnectionGene|null} */
     this.biasConnection = null;
-    /** @type {number[]} */
     this.inputs = [];
   }
 
@@ -63,13 +56,11 @@ class HiddenNode extends NodeGene {
     switch (this.config.biasMode) {
       case 'WEIGHTED_NODE':
         if (this.biasConnection !== null && this.biasConnection.enabled) {
-          /** @ts-ignore */
           sum += this.biasConnection.weight * this.biasConnection.inNode.bias;
         }
         break;
       case 'DIRECT_NODE':
         if (this.biasConnection !== null && this.biasConnection.enabled) {
-        /** @ts-ignore */
         sum += this.biasConnection.inNode.bias;
         }
         break;

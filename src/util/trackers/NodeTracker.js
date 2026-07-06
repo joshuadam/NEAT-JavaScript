@@ -7,7 +7,6 @@ class NodeTracker {
    * Initializes the node ID counter to 0.
    */
   constructor() {
-    /** @type {number} */
     this.nodeId = 0;
   }
 

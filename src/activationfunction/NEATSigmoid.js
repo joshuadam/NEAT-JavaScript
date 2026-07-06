@@ -16,7 +16,6 @@ class NEATSigmoid extends ActivationFunction {
    */
   constructor(steepness = 4.9) {
     super();
-    /** @type {number} */
     this.steepness = steepness;
   }
   

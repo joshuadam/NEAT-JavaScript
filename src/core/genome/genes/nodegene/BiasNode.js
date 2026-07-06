@@ -15,13 +15,9 @@ class BiasNode extends NodeGene {
    */
   constructor(id, config) {
     super(id, config);
-    /** @type {'BIAS'} */
     this.nodeType = NodeType.BIAS;
-    /** @type {number} */
     this.bias = config.bias;
-    /** @type {number} */
     this.lastOutput = this.bias;
-    /** @type {ConnectionGene[]} */
     this.outgoingConnections = [];
   }
 

@@ -11,7 +11,7 @@ const NodeType = require('../nodegene/NodeType');
 /** @typedef {import('../../Genome')} Genome */
 
 /**
- * Represents the genetic encoding of a genome 
+ * Represents the genetic encoding of a genome
  */
 class GeneticEncoding {
   /**
@@ -20,21 +20,13 @@ class GeneticEncoding {
    * @param {number} populationId - The ID of the population this encoding belongs to.
    */
   constructor(config, populationId) {
-    /** @type {Config} */
     this.config = config;
-    /** @type {Map<number, NodeGeneData>} */
     this.nodeGenesMap = new Map();
-    /** @type {Map<number, ConnectionGeneData>} */
     this.connectionGenesMap = new Map();
-    /** @type {NodeGeneData[]} */
     this.inputNodes = [];
-    /** @type {NodeGeneData[]} */
     this.outputNodes = [];
-    /** @type {NodeGeneData|null} */
     this.biasNode = null;
-    /** @type {number} */
     this.fitness = 0;
-    /** @type {number} */
     this.populationId = populationId;
   }
 
@@ -51,7 +43,6 @@ class GeneticEncoding {
     }
 
     for (const node of genome.nodeGenes) {
-      /** @ts-ignore */
       this.nodeGenesMap.set(node.id, new NodeGeneData(node.id, node.nodeType));
       if (node instanceof InputNode) {
         this.inputNodes.push(new NodeGeneData(node.id, node.nodeType));
@@ -83,7 +74,7 @@ class GeneticEncoding {
     } else if (otherFitness > thisFitness) {
       bestParent = otherParent;
       worstParent = this;
-    } else {
+    } else if (thisFitness === otherFitness) {
       bestParent = this.connectionGenesMap.size < otherParent.connectionGenesMap.size ? this : otherParent;
       worstParent = this.connectionGenesMap.size < otherParent.connectionGenesMap.size ? otherParent : this;
     }
@@ -296,7 +287,7 @@ class GeneticEncoding {
       connection.weight,
       enabled,
       connection.innovationNumber,
-      bestParentConnection.recurrent 
+      bestParentConnection.recurrent
     );
 
     this.addConnection(newConnection);
@@ -336,7 +327,7 @@ class GeneticEncoding {
     if (!this.nodeGenesMap.has(id)) {
       throw new Error(`Error: Node with ID ${id} does not exist.`);
     }
-    return /** @type {NodeGeneData} */ (this.nodeGenesMap.get(id));
+    return this.nodeGenesMap.get(id);
   }
 
   /**
@@ -345,7 +336,7 @@ class GeneticEncoding {
    * @returns {ConnectionGeneData} The connection data.
    */
   getConnectionByInnovationNumber(innovationNumber) {
-    return /** @type {ConnectionGeneData} */ (this.connectionGenesMap.get(innovationNumber));
+    return this.connectionGenesMap.get(innovationNumber);
   }
 
   /**

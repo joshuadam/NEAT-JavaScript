@@ -8,7 +8,6 @@ class GenomeTracker {
    * Initializes the genome ID counter to 0.
    */
   constructor() {
-    /** @type {number} */
     this.genomeId = 0;
   }
 

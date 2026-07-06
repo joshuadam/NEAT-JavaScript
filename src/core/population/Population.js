@@ -8,45 +8,32 @@ const Species = require("./Species");
 /** @typedef {import('../../util/trackers/InnovationTracker')} InnovationTracker */
 
 /**
- * The Population class is responsible for managing a collection of 
- * genomes and evolving them through generations using the NEAT algorithm. 
- * It handles speciation, fitness evaluation, selection, and reproduction 
+ * The Population class is responsible for managing a collection of
+ * genomes and evolving them through generations using the NEAT algorithm.
+ * It handles speciation, fitness evaluation, selection, and reproduction
  * to improve solutions over time.
  */
 class Population {
   /**
-   * Creates a new population with genomes initialized according 
+   * Creates a new population with genomes initialized according
    * to the provided configuration.
    * @param {Config} config - Configuration object containing parameters for the population and NEAT algorithm
    */
   constructor(config) {
-    /** @type {Genome[]} */
     this.genomes = [];
-    /** @type {Species[]} */
+
     this.species = [];
-    /** @type {Genome[]} */
     this.eliteGenomes = [];
-    /** @type {Genome[]} */
     this.newGeneration = [];
-    /** @type {Config} */
     this.config = config;
-    /** @type {boolean} */
     this.allStagnated = false;
-    /** @type {boolean} */
     this.stale = false;
-    /** @type {number} */
     this.populationId = PopulationTracker.getNextPopulationId();
-    /** @type {InnovationTracker} */
     this.innovationTracker = StaticManager.getInnovationTracker(this.populationId);
-    /** @type {number} */
     this.generation = 0;
-    /** @type {number} */
     this.speciesCounter = 0;
-    /** @type {number} */
     this.bestFitness = 0;
-    /** @type {number} */
     this.ageSinceLastImprovement = 0;
-    /** @type {boolean} */
     this.speciated = false;
 
     let baseGenome = GenomeBuilder.buildGenome(config, this.populationId);
@@ -60,8 +47,8 @@ class Population {
   }
 
   /**
-   * Divides the population into species based on the genetic similarity between 
-   * genomes. Genomes are grouped into species when their compatibility distance 
+   * Divides the population into species based on the genetic similarity between
+   * genomes. Genomes are grouped into species when their compatibility distance
    * is below the compatibility threshold defined in the configuration.
    */
   speciate() {
@@ -93,8 +80,8 @@ class Population {
   }
 
   /**
-   * Advances the population to the next generation by performing the complete 
-   * evolutionary process. This includes speciation, stagnation handling, 
+   * Advances the population to the next generation by performing the complete
+   * evolutionary process. This includes speciation, stagnation handling,
    * selection, reproduction, and elite preservation.
    */
   evolve() {
@@ -123,12 +110,12 @@ class Population {
   }
 
   /**
-   * Evaluates the fitness of all genomes in the population using the fitness 
-   * function provided in the configuration. This method must be called before 
+   * Evaluates the fitness of all genomes in the population using the fitness
+   * function provided in the configuration. This method must be called before
    * evolve() to ensure proper selection and reproduction based on fitness values.
-   * 
-   * The fitness function should be defined in the configuration object and will 
-   * be applied to each genome in the population. If a fitness function is not 
+   *
+   * The fitness function should be defined in the configuration object and will
+   * be applied to each genome in the population. If a fitness function is not
    * provided, you will need to manually assign fitness values to each genome.
    */
   evaluatePopulation() {
@@ -321,7 +308,6 @@ class Population {
   generateOffspring() {
     this.species.forEach(s => {
       const offspringCount = s.offspringCount;
-      /** @type {Genome[]} */
       const mutatedOnlyGenomes = [];
 
       for (let i = 0; i < offspringCount; i++) {
@@ -331,7 +317,6 @@ class Population {
           let selectedGenome = s.genomes[Math.floor(Math.random() * genomesInSpecies)];
           while (
             genomesInSpecies > 1 &&
-            /** @ts-ignore */
             mutatedOnlyGenomes.includes(selectedGenome) &&
             i < genomesInSpecies
           ) {
@@ -370,7 +355,6 @@ class Population {
               parentsFound = true;
             }
           }
-          /** @ts-ignore */
           offspring = parent1.crossover(parent2);
           if (Math.random() <= this.config.mutationRate) {
             offspring.mutate();

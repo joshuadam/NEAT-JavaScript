@@ -3,7 +3,7 @@ const StaticManager = require('../StaticManager');
 /** @typedef {import('../../core/genome/genes/connectiongene/ConnectionGene')} ConnectionGene */
 
 /**
- * Tracks innovation numbers 
+ * Tracks innovation numbers
  */
 class InnovationTracker {
   static InnovationType = Object.freeze({
@@ -22,9 +22,7 @@ class InnovationTracker {
    * Creates a new InnovationTracker instance.
    */
   constructor() {
-    /** @type {Map<string, InnovationData | number>} */
     this.innovationMap = new Map();
-    /** @type {number} */
     this.innovationCounter = 0;
   }
 
@@ -45,7 +43,6 @@ class InnovationTracker {
     const mutationKey = this.generateMutationKey(InnovationTracker.InnovationType.addConnection, inNodeId, outNodeId);
     
     if (this.innovationMap.has(mutationKey)) {
-      /** @ts-ignore */
       return this.innovationMap.get(mutationKey);
     } else {
       const innovationData = {
@@ -69,12 +66,10 @@ class InnovationTracker {
   trackAddNodeInnovation(existingConnection, populationId) {
     const nodeTracker = StaticManager.getNodeTracker(populationId);
     const mutationKey = this.generateMutationKey(InnovationTracker.InnovationType.addNode, existingConnection.inNode.id, existingConnection.outNode.id);
-
-    /** @type {number} */
-    let newNodeId;
+    let newNodeId = null;
 
     if (this.innovationMap.has(mutationKey)) {
-      newNodeId = /** @type {number} */ (this.innovationMap.get(mutationKey));
+      newNodeId = this.innovationMap.get(mutationKey);
     } else {
       newNodeId = nodeTracker.getNextNodeId();
       this.innovationMap.set(mutationKey, newNodeId);

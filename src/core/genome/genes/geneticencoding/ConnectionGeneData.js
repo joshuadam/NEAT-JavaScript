@@ -12,17 +12,11 @@ class ConnectionGeneData {
    * @param {boolean} recurrent - Whether this is a recurrent connection.
    */
   constructor(inNodeId, outNodeId, weight, enabled, innovationNumber, recurrent) {
-    /** @type {number} */
     this.inNodeId = inNodeId;
-    /** @type {number} */
     this.outNodeId = outNodeId;
-    /** @type {number} */
     this.weight = weight;
-    /** @type {boolean} */
     this.enabled = enabled;
-    /** @type {number} */
     this.innovationNumber = innovationNumber;
-    /** @type {boolean} */
     this.recurrent = recurrent;
   }
 }

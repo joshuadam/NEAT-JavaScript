@@ -7,18 +7,6 @@ const NodeTracker = require('./trackers/NodeTracker');
  * Singleton manager class for accessing trackers.
  */
 class StaticManager {
-  /** @type {StaticManager|undefined} */
-  static instance;
-
-  /** @type {Map<number, InnovationTracker>} */
-  innovationTrackerMap = /** @type {*} */ (undefined);
-
-  /** @type {Map<number, GenomeTracker>} */
-  genomeTrackerMap = /** @type {*} */ (undefined);
-
-  /** @type {Map<number, NodeTracker>} */
-  nodeTrackerMap = /** @type {*} */ (undefined);
-
   /**
    * Creates or returns the singleton StaticManager instance.
    * Initializes tracker maps for storing population-specific trackers.
@@ -40,7 +28,7 @@ class StaticManager {
    */
   getInnovationTracker(populationId) {
     if (this.innovationTrackerMap.has(populationId)) {
-      return /** @type {InnovationTracker} */ (this.innovationTrackerMap.get(populationId));
+      return this.innovationTrackerMap.get(populationId);
     } else {
       const InnovationTracker = require('./trackers/InnovationTracker');
       const newInnovationTracker = new InnovationTracker();
@@ -56,7 +44,7 @@ class StaticManager {
    */
   getGenomeTracker(populationId) {
     if (this.genomeTrackerMap.has(populationId)) {
-      return /** @type {GenomeTracker} */ (this.genomeTrackerMap.get(populationId));
+      return this.genomeTrackerMap.get(populationId);
     } else {
       const genomeTracker = new GenomeTracker();
       this.genomeTrackerMap.set(populationId, genomeTracker);
@@ -71,7 +59,7 @@ class StaticManager {
    */
   getNodeTracker(populationId) {
     if (this.nodeTrackerMap.has(populationId)) {
-      return /** @type {NodeTracker} */ (this.nodeTrackerMap.get(populationId));
+      return this.nodeTrackerMap.get(populationId);
     } else {
       const nodeTracker = new NodeTracker();
       this.nodeTrackerMap.set(populationId, nodeTracker);

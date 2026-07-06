@@ -11,14 +11,14 @@ const ConnectionGene = require('../core/genome/genes/connectiongene/ConnectionGe
 /** @typedef {import('../core/genome/genes/nodegene/NodeGene')} NodeGene */
 
 /**
- * This class provides a convenient way to create genomes with 
- * a standard topology determined by your configuration settings. This 
- * approach is recommended for initializing populations with consistent 
+ * This class provides a convenient way to create genomes with
+ * a standard topology determined by your configuration settings. This
+ * approach is recommended for initializing populations with consistent
  * starting topologies.
  */
 class GenomeBuilder {
   /**
-   * Creates a new genome with input and output nodes 
+   * Creates a new genome with input and output nodes
    * connected according to the configuration parameters.
    * @param {Config} config - Configuration object containing parameters for genome creation
    * @param {number} populationId - ID of the population this genome belongs to
@@ -72,7 +72,6 @@ class GenomeBuilder {
       for (let outputIdx = numInputs; outputIdx < numInputs + numOutputs; outputIdx++) {
         let outputNode = nodeGenes[outputIdx];
         let innovationData = StaticManager.getInnovationTracker(populationId)
-          /** @ts-ignore */
           .trackInnovation(biasNode.id, outputNode.id);
 
         connectionGenes.push(new ConnectionGene(
@@ -100,10 +99,8 @@ class GenomeBuilder {
   static loadGenome(jsonData, config) {
     const parsedData = JSON.parse(jsonData);
 
-    /** @type {NodeGene[]} */
     const nodeGenes = [];
 
-    /** @ts-ignore */
     parsedData.nodeGenes.forEach(nodeData => {
       let node;
       switch (nodeData.type) {
@@ -125,10 +122,8 @@ class GenomeBuilder {
       nodeGenes.push(node);
     });
 
-    /** @type {ConnectionGene[]} */
     const connectionGenes = [];
 
-    /** @ts-ignore */
     parsedData.connectionGenes.forEach(connData => {
       const inNode = nodeGenes.find(node => node.id === connData.inNodeId);
       const outNode = nodeGenes.find(node => node.id === connData.outNodeId);

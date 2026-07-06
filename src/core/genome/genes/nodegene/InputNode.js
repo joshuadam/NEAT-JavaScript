@@ -16,9 +16,7 @@ class InputNode extends NodeGene {
    */
   constructor(id, config) {
     super(id, config);
-    /** @type {ConnectionGene[]} */
     this.outgoingConnections = [];
-    /** @type {'INPUT'} */
     this.nodeType = NodeType.INPUT;
   }
 

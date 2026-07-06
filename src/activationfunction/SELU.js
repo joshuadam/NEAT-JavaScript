@@ -1,5 +1,4 @@
 const ActivationFunction = require('./ActivationFunction');
-
 /**
  * Scaled Exponential Linear Unit combines scaling factors with exponential 
  * behavior for negative inputs. Designed to maintain activation 
@@ -31,5 +30,4 @@ class SELU extends ActivationFunction {
     return this.scale * (value > 0 ? value : this.alpha * (Math.exp(value) - 1));
   }
 }
-
 module.exports = SELU;

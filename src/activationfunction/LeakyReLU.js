@@ -1,5 +1,4 @@
 const ActivationFunction = require('./ActivationFunction');
-
 /**
  * Variant of ReLU that allows small negative values (multiplied by 0.01) 
  * when the input is negative, preventing neurons from becoming inactive.
@@ -15,7 +14,6 @@ class LeakyReLU extends ActivationFunction {
    */
   constructor(alpha = 0.01) {
     super();
-    /** @type {number} */
     this.alpha = alpha;
   }
   
@@ -29,5 +27,4 @@ class LeakyReLU extends ActivationFunction {
     return value > 0 ? value : this.alpha * value;
   }
 }
-
 module.exports = LeakyReLU;

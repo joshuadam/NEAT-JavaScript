@@ -13,7 +13,6 @@ class Algorithm {
    * @param {Config} config - The configuration object used to initialize the population and set target fitness / generations.
    */
   constructor(config) {
-    /** @type {Config} */
     this.config = config;
     this.population = new Population(config);
   }

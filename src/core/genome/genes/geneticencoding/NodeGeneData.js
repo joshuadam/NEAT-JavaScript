@@ -8,9 +8,7 @@ class NodeGeneData {
    * @param {'INPUT' | 'OUTPUT' | 'HIDDEN' | 'BIAS'} nodeType - The type of node ('INPUT', 'OUTPUT', 'HIDDEN', or 'BIAS').
    */
   constructor(id, nodeType) {
-    /** @type {number} */
     this.id = id;
-    /** @type {'INPUT' | 'OUTPUT' | 'HIDDEN' | 'BIAS'} */
     this.nodeType = nodeType;
   }
 }

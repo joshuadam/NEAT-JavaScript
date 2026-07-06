@@ -11,21 +11,13 @@ class Species {
    * @param {Config} config - The configuration object.
    */
   constructor(id, config) {
-    /** @type {number} */
     this.id = id;
-    /** @type {Config} */
     this.config = config;
-    /** @type {number} */
     this.bestFitness = 0;
-    /** @type {number} */
     this.generationsSinceImprovement = 0;
-    /** @type {boolean} */
     this.stagnated = false;
-    /** @type {Genome[]} */
     this.genomes = [];
-    /** @type {Genome|null} */
     this.representative = null;
-    /** @type {number} */
     this.offspringCount = 0;
   }
 

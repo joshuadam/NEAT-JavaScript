@@ -11,15 +11,10 @@ class NodeGene {
    * @param {Config} config - The configuration object.
    */
   constructor(id, config) {
-    /** @type {number} */
     this.id = id;
-    /** @type {Config} */
     this.config = config;
-    /** @type {number} */
     this.lastOutput = 0;
-    /** @type {number} */
     this.expectedInputs = 0;
-    /** @type {number} */
     this.receivedInputs = 0;
   }
 
