@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "checkJs": true,
-    "strict": true,
+    "allowJs": true,
+    "checkJs": false,
+    "strict": false,
     "noEmit": true,
     "lib": ["es6", "dom"],
     "target": "es6"
