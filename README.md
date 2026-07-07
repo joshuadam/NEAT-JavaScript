@@ -34,9 +34,9 @@ To use in a browser, simply add the following script tag to your HTML file:
 ```
 
 ## Documentation
-For a comprehensive guide on usage and complete documentation, visit [this](https://neat-javascript.org) link.
+For a comprehensive guide on usage and complete documentation, visit [this](https://neat-javascript.org/docs) link.
 
-For a quick-start guide, check out [this](https://neat-javascript.org/quickstart.html) link.
+For a quick-start guide, check out [this](https://neat-javascript.org/docs/quickstart) link.
 
 ## Contributing
 
