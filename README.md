@@ -7,6 +7,7 @@ In this implementation, NEAT’s principles are faithfully applied, emphasizing 
 This implementation offers a clear, accessible codebase for those exploring NEAT and has achieved results comparable to the benchmarks demonstrated in the original paper, providing a solid foundation for further exploration and development.
 
 ## Examples
+- [Lunar Lander](https://neat-javascript.org/examples/lunar-lander)
 - [Chrome Dino Game](https://neat-javascript.org/examples/dino)
 - [Self Driving Car](https://neat-javascript.org/examples/self-driving-car)
 - [XOR](https://neat-javascript.org/examples/xor)
