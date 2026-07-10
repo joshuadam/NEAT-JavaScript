@@ -1,0 +1,27 @@
+import { ActivationFunction } from './ActivationFunction';
+
+/**
+ * Modified sigmoid function from the original NEAT paper with a
+ * steeper slope. Uses a coefficient of 4.9 to create a sharper
+ * transition.
+ *
+ * Formula: `σ(x) = 1 / (1 + e^(-4.9·x))`
+ */
+export class NEATSigmoid extends ActivationFunction {
+  /**
+   * Creates a new NEATSigmoid activation function.
+   * @param steepness - The steepness parameter that controls the slope of the sigmoid curve.
+   */
+  constructor(public steepness: number = 4.9) {
+    super();
+  }
+
+  /**
+   * Applies the NEAT sigmoid function to the input value.
+   * @param value - The input value to transform.
+   * @returns The transformed value in the range (0, 1).
+   */
+  apply(value: number): number {
+    return 1 / (1 + Math.exp(-this.steepness * value));
+  }
+}
